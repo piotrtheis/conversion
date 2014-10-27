@@ -1,5 +1,4 @@
 <?php
-ini_set('memory_limit', '128M');
 include './class/XMLTable.php';
 include './class/HTMLTable.php';
 include './class/JSONTable.php';
