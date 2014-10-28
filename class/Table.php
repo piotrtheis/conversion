@@ -16,21 +16,84 @@ include_once 'ITable.php';
 abstract class Table implements ITable{
     //put your code here
     
+    /**
+     * Input data to parse,from file or string
+     * 
+     * @var mixed  
+     */
     protected $table_input;
+    
+    
+    
+    /**
+     * Parse result 
+     * 
+     * @var array 
+     */
     protected $data_to_print;
     
     
+    /**
+     * Parse class name 
+     * 
+     * @var string 
+     */
+    private $class;
+
+
+    
     public function __construct() {
+        $this->class=get_class($this);
         $this->data_to_print=  $this->toArray();
     }
     
-    public function drawHTMLDom(){
+    
+    
+    /**
+     * Return the method if class is other data type  
+     * otherwise returns Exception
+     *  
+     * @param string $method called method
+     * @param string $args called method arguments
+     * @return type mixed
+     * @throws Exception
+     */
+    public function __call($method, $args){
+        if(method_exists($this, $method)){         
+            $method_name=explode('_',$method);
+            if($this->class!=end($method_name)){
+                return call_user_func_array(array($this, $method), $args);
+            }else{
+                throw new Exception("You can't call this method for this class, you already have this data");
+            }
+        }
+    }    
+    
+    /**
+     * 
+     */
+    protected function draw_HTMLList(){
+        
+    }
+
+    protected function drawDom_HTMLLList(){
         
     }
 
 
-    
-    public function drawHTML($file=null){
+    protected function drawDom_HTMLTable(){
+        
+    }
+
+
+    /**
+     * Draw html table or put into file
+     * 
+     * 
+     * @param string $file path to file
+     * @return mixed
+     */
+    protected function draw_HTMLTable($file=null){
         $data= $this->data_to_print;
         if(array_key_exists('table', $data)){
             $body=$data['table'];
@@ -67,13 +130,18 @@ abstract class Table implements ITable{
     }
     
     
-    public function drawXMLDom(){
+    protected function drawDom_XMLTable(){
         
     }
 
     
-
-    public function drawXML($file=null){
+    /**
+     * Draw xml result as string or put into file
+     * 
+     * @param string $file path to file
+     * @return mixed
+     */
+    protected function draw_XMLTable($file=null){
         $data= $this->data_to_print;
         if(array_key_exists('table', $data)){
             $body=$data['table'];
@@ -103,7 +171,15 @@ abstract class Table implements ITable{
         }  
     }
     
-    public  function drawJSON($file=null){
+    
+    
+    /**
+     * Draw json result as string or put into file
+     * 
+     * @param type $file path to file
+     * @return type
+     */
+    protected function draw_JSONTable($file=null){
         if($file!=null){
             $this->filePutContent($file,json_encode($this->data_to_print,JSON_FORCE_OBJECT));
         }else {
@@ -112,7 +188,12 @@ abstract class Table implements ITable{
     }
 
     
-    public function drawCSV($file){
+    
+    /**
+     * Save csv in $file
+     * @param type $file path to file
+     */
+    protected function draw_CSVTable($file){
         $data= $this->data_to_print;
         if(array_key_exists('table', $data)){
             $body=$data['table'];
@@ -128,8 +209,12 @@ abstract class Table implements ITable{
         }
     }
     
-    
-    public function drawASCI($file=null){
+    /**
+     * 
+     * @param type $file
+     * @return type
+     */
+    protected function draw_ASCITable($file=null){
         $data= $this->data_to_print;
         if(array_key_exists('table', $data)){
             $body=$data['table'];
@@ -185,11 +270,13 @@ abstract class Table implements ITable{
     }
     
     
-    public function drawPDF(){
-        
-    }
-    
-    
+
+    /**
+     * 
+     * @param type $file
+     * @param type $output
+     * @throws Exception
+     */
     private function filePutContent($file,$output){
         if(file_exists($file)){
             if(is_writable($file)){
