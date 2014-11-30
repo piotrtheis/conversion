@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-
 <tab>
     <row>
         <head1>11</head1>
@@ -31,6 +25,4 @@ and open the template in the editor.
         <head2>52</head2>
         <head3>53</head3>
     </row>
-
-
 </tab>

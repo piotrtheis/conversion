@@ -1,25 +1,14 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of TableFromHtml
- *
- * @author piotr
- */
 include_once  'Table.php';
 include_once 'ITable.php';
 
 class HTMLTable  extends Table implements ITable{
     
-    
-    private $dom;
 
-    public function __construct($doc,$table_id=null) {        
+    public function __construct($doc,$table_id=null) {
+        $this->dom=new DOMDocument();
+        $this->dom->preserveWhiteSpace = false;
         $this->table_input=$this->getTableData($doc,$table_id);
         parent::__construct();
     }
@@ -27,14 +16,13 @@ class HTMLTable  extends Table implements ITable{
     
     
     public function getTableData($doc,$table_id=null){
-        $this->dom=new DOMDocument();
         $ext=array('html','phtml');
         
         if(file_exists($doc)){
             if(in_array(strtolower(pathinfo($doc,PATHINFO_EXTENSION)),$ext)){
                 $this->dom->loadHTMLFile($doc);
             }else{
-                throw new Exception('nie to rozszezenie');
+                throw new Exception("File type ".pathinfo($doc,PATHINFO_EXTENSION)." does not match expected ".implode(',', $ext)."");
             }
         }else{
             if(!(strcmp( $doc, strip_tags($doc) ) == 0))
@@ -56,20 +44,39 @@ class HTMLTable  extends Table implements ITable{
 
     public function toArray(){
         $result = array();
-
-        foreach($this->table_input->childNodes as $row){
+        $arrt = array();
+        if($this->hasAttribute($this->table_input))
+                $attr[$this->table_input->tagName]=$this->hasAttribute($this->table_input);    
+        
+        foreach($this->table_input->childNodes as $key=>$row){
            if(strtolower($row->nodeName) != 'tr') continue;
-           $rowdata = array();
-           foreach($row->childNodes as $cell){
+            if($this->hasAttribute($row))
+                $attr[$row->tagName][$key]=$this->hasAttribute($row); 
+           $rowdata = array();   
+           foreach($row->childNodes as $i=>$cell){
                if((strtolower($cell->nodeName) != 'td')&&(strtolower($cell->nodeName) != 'th')) continue;
                $rowdata[$cell->nodeName][] = $cell->textContent;
            }
            $result[] = $rowdata;
         }
-        return $result;
+        return array('table'=>$result,'attributes'=>$attr);
     }
     
     
+    public function hasAttribute(DOMElement $element){
+        $attributes=array();
+        foreach ($element->attributes as $attr){
+            if($attr->value){
+                $attributes[$attr->name]=$attr->value;
+            }
+        }
+        if(!empty($attributes))
+            return $attributes;
+        return false;
+    }
+
+    
+
     public function __destruct() {
         $this->dom->saveHTML();
     }

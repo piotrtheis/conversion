@@ -1,13 +1,8 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
- * Description of XMLTable
+ * XMLTable
  *
  * @author piotr
  */
@@ -30,7 +25,7 @@ class XMLTable extends Table implements ITable{
             if(in_array(strtolower(pathinfo($doc,PATHINFO_EXTENSION)),$ext)){
                 return simplexml_load_file($doc);
             }else{
-                throw new Exception('nie to rozszezenie');
+                throw new Exception("File type ".pathinfo($doc,PATHINFO_EXTENSION)." does not match expected ".implode(',', $ext)."");
             }
         }elseif(!(strcmp( $doc, strip_tags($doc) ) == 0)){
             return simplexml_load_string($doc);
@@ -55,6 +50,6 @@ class XMLTable extends Table implements ITable{
         }
         array_unshift($result,$heads);
         
-        return $result;
+        return array('table'=>$result);
     }
 }

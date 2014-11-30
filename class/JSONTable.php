@@ -1,13 +1,6 @@
 <?php
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * Description of JSONTable
+ * JSONTable 
  *
  * @author piotr
  */
@@ -31,7 +24,7 @@ class JSONTable extends Table implements ITable{
             if(in_array(strtolower(pathinfo($doc,PATHINFO_EXTENSION)),$ext)){
                 return file_get_contents($doc);
             }else{
-                throw new Exception('nie to rozszezenie');
+                throw new Exception("File type ".pathinfo($doc,PATHINFO_EXTENSION)." does not match expected ".implode(',', $ext)."");
             }
         }elseif(is_object(json_decode($doc))){
             return $doc;

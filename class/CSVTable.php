@@ -1,13 +1,6 @@
 <?php
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * Description of CSVTable
+ * CSVTable
  *
  * @author piotr
  */
@@ -33,7 +26,7 @@ class CSVTable extends Table implements ITable{
                     return file_get_contents($doc);
                 }
             }else{
-                throw new Exception('nie to rozszezenie');
+                throw new Exception("File type ".pathinfo($doc,PATHINFO_EXTENSION)." does not match expected ".implode(',', $ext)."");
             }
         }  else {
             $this->from_file=false;
@@ -45,19 +38,18 @@ class CSVTable extends Table implements ITable{
     public function toArray() {
         $i = 0;
         $result=array();
-            $lines=explode(PHP_EOL, $this->table_input);
-            foreach ($lines as $line){
-                $i++;
-                $row=array();
-                if($i==1){
-                    $row['th']=explode(';', $line);
-                }else{
-                    $row['td']=explode(';', $line);
-                }
-                $result[]=$row;
-                
+        $lines=explode(PHP_EOL, $this->table_input);
+        foreach ($lines as $line){
+            $i++;
+            $row=array();
+            if($i==1){
+                $row['th']=explode(';', $line);
+            }else{
+                $row['td']=explode(';', $line);
             }
-            return $result;
+            $result[]=$row;            
+        }
+        return array('table'=>$result);
         
     }
 }

@@ -45,7 +45,6 @@ class HTMLList extends Table implements ITable{
             throw new Exception('nie ma tablei');
         }
         return $list;
-        
     }
     
     
@@ -69,6 +68,17 @@ class HTMLList extends Table implements ITable{
         return array('table'=>$result);
     }
 
+//    public function hasAttribute(DOMElement $element){
+//        $attributes=array();
+//        foreach ($element->attributes as $attr){
+//            if($attr->value){
+//                $attributes[$attr->name]=$attr->value;
+//            }
+//        }
+//        if(!empty($attributes))
+//            return $attributes;
+//        return false;
+//    }    
     
     public function __destruct() {
         $this->dom->saveHTML();

@@ -1,13 +1,6 @@
-<?php //
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+<?php 
 /**
- * Description of ASCIITable
+ * ASCIITable
  *
  * @author piotr
  */
@@ -34,7 +27,7 @@ class ASCIITable extends Table implements ITable{
                 $this->from_file=true;
                 return $doc;
             }else{
-                throw new Exception('nie to rozszezenie');
+                throw new Exception("File type ".pathinfo($doc,PATHINFO_EXTENSION)." does not match expected ".implode(',', $ext)."");
             }
         }  else {
             $this->from_file=false;
@@ -61,9 +54,7 @@ class ASCIITable extends Table implements ITable{
                 }
                 $index++;
             }
-            $table=array('table'=>$result);
-
-            return $result;
+            return array('table'=>$result);
         }else {
             $lines=explode(PHP_EOL, $this->table_input);
             foreach ($lines as $line){
@@ -79,9 +70,7 @@ class ASCIITable extends Table implements ITable{
                 }
                 $index++;
             }
-            $table=array('table'=>$result);
-
-            return $result;
+            return array('table'=>$result);
         }
     }
 
